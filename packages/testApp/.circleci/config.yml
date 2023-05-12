@@ -1,0 +1,91 @@
+version: 2.1
+jobs:
+  node:
+    working_directory: ~/getting-started-example/packages/testApp
+    docker:
+      - image: cimg/node:12.16
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          key: yarn-v1-{{ checksum "yarn.lock" }}-{{ arch }}
+
+      - restore_cache:
+          key: node-v1-{{ checksum "package.json" }}-{{ arch }}
+
+      - run: yarn install
+
+      - save_cache:
+          key: yarn-v1-{{ checksum "yarn.lock" }}-{{ arch }}
+          paths:
+            - ~/.cache/yarn
+
+      - save_cache:
+          key: node-v1-{{ checksum "package.json" }}-{{ arch }}
+          paths:
+            - node_modules
+
+      - persist_to_workspace:
+          root: ~/getting-started-example/packages/testApp
+          paths:
+            - node_modules
+
+      - store_test_results:
+          path: test-results
+
+      - store_artifacts:
+          path: test-results
+
+  macos-build-and-test:
+    working_directory: ~/getting-started-example/packages/testApp
+    macos:
+      xcode: 11.3.0
+    environment:
+      FL_OUTPUT_DIR: output
+      FASTLANE_LANE: test
+
+    steps:
+      - checkout
+      - restore_cache:
+          key: yarn-v1-{{ checksum "yarn.lock" }}-{{ arch }}
+
+      - restore_cache:
+          key: node-v1-{{ checksum "package.json" }}-{{ arch }}
+
+      - run: yarn install
+
+      - save_cache:
+          key: yarn-v1-{{ checksum "yarn.lock" }}-{{ arch }}
+          paths:
+            - ~/.cache/yarn
+
+      - save_cache:
+          key: node-v1-{{ checksum "package.json" }}-{{ arch }}
+          paths:
+            - node_modules
+
+      - store_artifacts:
+          path: output
+          
+      - store_test_results:
+          path: output/scan
+            
+  android-build-and-test:
+    working_directory: ~/getting-started-example/packages/testApp/android
+    docker:
+      - image: circleci/android:api-29-node
+    steps:
+      - checkout:
+          path: ~/getting-started-example/packages/testApp
+
+      - attach_workspace:
+          at: ~/getting-started-example/packages/testApp
+
+workflows:
+  node-android-ios:
+    jobs:
+      - node
+      - android-build-and-test:
+          requires:
+            - node
