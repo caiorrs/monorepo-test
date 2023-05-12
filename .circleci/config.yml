@@ -1,7 +1,7 @@
 version: 2.1
 jobs:
   node:
-    working_directory: ./packages/testApp
+    working_directory: ~/getting-started-example/packages/testApp
     docker:
       - image: cimg/node:16.20
 
@@ -10,15 +10,15 @@ jobs:
       - run: yarn install
 
   android-build-and-test:
-    working_directory: ./packages/testApp/android
+    working_directory: ~/getting-started-example/packages/testApp/android
     docker:
       - image: circleci/android:api-30-node
     steps:
       - checkout:
-          path: ./packages/testApp
+          path: ~/getting-started-example/packages/testApp
 
       - attach_workspace:
-          at: ./packages/testApp
+          at: ~/getting-started-example/packages/testApp
 
 workflows:
   node-android-ios:
