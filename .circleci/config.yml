@@ -23,9 +23,8 @@ jobs:
       - run:
           name: build android
           command: |
-            pwd
             mkdir -p out
-            cd android
+            ls -la
             ./gradlew clean
             ./gradlew assembleRelease
             mv app/build/outputs/apk/release/app-release.apk ~/out/release.apk
