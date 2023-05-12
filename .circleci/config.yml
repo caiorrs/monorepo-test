@@ -19,6 +19,17 @@ jobs:
 
       - attach_workspace:
           at: ~/getting-started-example/packages/testApp
+      
+      - run:
+          name: build android
+          command: |
+            ./gradlew clean
+            ./gradlew assembleRelease
+            mkdir -p out
+            mv app/build/outputs/apk/release/app-release.apk ~/out/release.apk
+      - store_artifacts:
+          path: out
+
 
 workflows:
   node-android-ios:
