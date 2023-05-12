@@ -23,9 +23,11 @@ jobs:
       - run:
           name: build android
           command: |
+            pwd
+            mkdir -p out
+            cd android
             ./gradlew clean
             ./gradlew assembleRelease
-            mkdir -p out
             mv app/build/outputs/apk/release/app-release.apk ~/out/release.apk
       - store_artifacts:
           path: out
