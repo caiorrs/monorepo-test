@@ -35,6 +35,17 @@ jobs:
             mkdir -p out
             pwd
             ls -la
+            echo "-------------"
+            echo "INSIDE PROJECT"
+            cd project
+            pwd
+            ls -la
+            echo "-------------"
+            echo "INSIDE SRC"
+            cd ../src
+            pwd
+            ls -la
+            echo "-------------"
             cd packages/testApp/android
             ls -la
             ./gradlew clean
