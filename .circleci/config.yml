@@ -23,6 +23,9 @@ jobs:
       - run:
           name: build android
           command: |
+            pwd
+            ls -la
+            echo ${CIRCLE_WORKING_DIRECTORY}
             cd ${CIRCLE_WORKING_DIRECTORY}
             mkdir -p out
             pwd
