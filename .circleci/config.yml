@@ -24,30 +24,11 @@ jobs:
           name: build android
           command: |
             cd ~
-            pwd
-            echo "-------------"
-            echo "PROJECT"
-            ls -la project
-            echo "-------------"
-            echo "SRC"
-            ls -la src
-            echo "-------------"
             mkdir -p out
-            pwd
-            ls -la
-            echo "-------------"
-            echo "INSIDE PROJECT"
             cd project
-            pwd
-            ls -la
-            echo "-------------"
-            echo "INSIDE SRC"
-            cd ../src
-            pwd
-            ls -la
-            echo "-------------"
-            cd packages/testApp/android
-            ls -la
+            cd packages/testApp
+            npm install
+            cd android
             ./gradlew clean
             ./gradlew assembleRelease
             mv app/build/outputs/apk/release/app-release.apk ${CIRCLE_WORKING_DIRECTORY}/out/release.apk
