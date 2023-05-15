@@ -1,7 +1,7 @@
 version: 2.1
 jobs:
   node:
-    working_directory: ~/getting-started-example/packages/testApp
+    # working_directory: ~/getting-started-example/packages/testApp
     docker:
       - image: cimg/node:16.20
 
@@ -23,6 +23,7 @@ jobs:
       - run:
           name: build android
           command: |
+            cd ~
             pwd
             ls -la
             echo ${CIRCLE_WORKING_DIRECTORY}
