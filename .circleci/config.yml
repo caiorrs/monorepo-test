@@ -14,11 +14,11 @@ jobs:
     docker:
       - image: circleci/android:api-30-node
     steps:
-      # - checkout:
-      #     path: ~/getting-started-example/packages/testApp
+      - checkout:
+          path: ~/project
 
-      # - attach_workspace:
-      #     at: ~/getting-started-example/packages/testApp
+      - attach_workspace:
+          at: ~/project
       
       - run:
           name: build android
