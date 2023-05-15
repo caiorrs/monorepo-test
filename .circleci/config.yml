@@ -10,15 +10,15 @@ jobs:
       - run: yarn install
 
   android-build-and-test:
-    working_directory: ~/getting-started-example/packages/testApp/android
+    # working_directory: ~/getting-started-example/packages/testApp/android
     docker:
       - image: circleci/android:api-30-node
     steps:
-      - checkout:
-          path: ~/getting-started-example/packages/testApp
+      # - checkout:
+      #     path: ~/getting-started-example/packages/testApp
 
-      - attach_workspace:
-          at: ~/getting-started-example/packages/testApp
+      # - attach_workspace:
+      #     at: ~/getting-started-example/packages/testApp
       
       - run:
           name: build android
