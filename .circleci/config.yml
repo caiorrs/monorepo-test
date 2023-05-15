@@ -25,9 +25,13 @@ jobs:
           command: |
             cd ~
             pwd
-            ls -la
-            echo ${CIRCLE_WORKING_DIRECTORY}
-            cd ${CIRCLE_WORKING_DIRECTORY}
+            echo "-------------"
+            echo "PROJECT"
+            ls -la project
+            echo "-------------"
+            echo "SRC"
+            ls -la src
+            echo "-------------"
             mkdir -p out
             pwd
             ls -la
