@@ -8,6 +8,23 @@ jobs:
     steps:
       - checkout
       - run: yarn install
+  
+  sonarqube:
+    docker:
+      - image: sonarqube:latest
+    steps:
+      - run: |
+          docker-compose up -d
+          cd ~
+          cd project
+          cd packages
+          brew install sonar-scanner
+          sonar-scanner \
+            -Dsonar.projectKey=UFE \
+            -Dsonar.sources=./testApp \
+            -Dsonar.login=admin \
+            -Dsonar.password=admin \
+            -Dsonar.host.url=http://localhost:9000
 
   android-build-and-test:
     # working_directory: ~/getting-started-example/packages/testApp/android
@@ -40,6 +57,7 @@ workflows:
   node-android-ios:
     jobs:
       - node
+      - sonarqube
       - android-build-and-test:
           requires:
             - node
