@@ -14,7 +14,6 @@ jobs:
       - image: sonarqube:latest
     steps:
       - run: |
-          docker-compose up -d
           cd ~
           cd project
           cd packages
