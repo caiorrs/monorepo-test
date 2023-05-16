@@ -1,0 +1,8 @@
+# Docker setup
+
+version: '1.0'
+services:
+  sonar-server:
+    image: sonarqube:latest
+    ports:
+      - 9000:9000
