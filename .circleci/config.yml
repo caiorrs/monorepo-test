@@ -20,19 +20,7 @@ jobs:
           echo "---------"
           cd ~
           echo "---------"
-          cd project
-          echo "---------"
-          cd packages
-          echo "---------"
-          pwd
-          echo "---------"
           ls -la
-          sonar-scanner \
-            -Dsonar.projectKey=UFE \
-            -Dsonar.sources=./testApp \
-            -Dsonar.login=admin \
-            -Dsonar.password=admin \
-            -Dsonar.host.url=http://localhost:9000
 
   android-build-and-test:
     # working_directory: ~/getting-started-example/packages/testApp/android
