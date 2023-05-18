@@ -19,6 +19,8 @@ jobs:
       xcode: 14.2.0
 
     steps:
+      - checkout:
+            path: ~/project
       # Commands will execute in macOS container
       # with Xcode 14.2.0 installed
       - run: |
