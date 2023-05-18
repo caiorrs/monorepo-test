@@ -32,6 +32,10 @@ jobs:
           cd project
           echo "------LS PROJECT------"
           ls -la
+          echo "INSTALL DOCKER"
+          set -x
+          curl -L https://github.com/docker/compose/releases/download/1.11.2/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+          chmod +x /usr/local/bin/docker-compose
           echo "------DOCKER------"
           docker-compose up -d
           echo "------SONAR SCANNER------"
