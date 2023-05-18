@@ -9,18 +9,40 @@ jobs:
       - checkout
       - run: yarn install
   
-  sonarqube:
-    docker:
-      - image: sonarqube:latest
+  # sonarqube:
+  #   docker:
+  #     - image: sonarqube:latest
+  #   steps:
+  #     - run: |
+  build:
+    macos:
+      xcode: 14.2.0
+
     steps:
+      # Commands will execute in macOS container
+      # with Xcode 14.2.0 installed
       - run: |
-          echo "---------"
-          echo "INSTALLING SONAR-SCANNER"
+          echo "------BREW------"
           brew install sonar-scanner
-          echo "---------"
+          echo "------PWD------"
+          pwd
           cd ~
-          echo "---------"
+          echo "------ LS ~ ------"
           ls -la
+          cd project
+          echo "------LS PROJECT------"
+          ls -la
+          echo "------DOCKER------"
+          docker-compose up -d
+          echo "------SONAR SCANNER------"
+          sonar-scanner \
+            -Dsonar.projectKey=UFE \
+            -Dsonar.sources=./src \
+            -Dsonar.login=admin \
+            -Dsonar.password=admin \
+            -Dsonar.host.url=http://localhost:9000
+          echo "------DONE!------"
+
 
   android-build-and-test:
     # working_directory: ~/getting-started-example/packages/testApp/android
@@ -53,7 +75,7 @@ workflows:
   node-android-ios:
     jobs:
       - node
-      - sonarqube
+      - build
       - android-build-and-test:
           requires:
             - node
