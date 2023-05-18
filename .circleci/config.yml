@@ -24,9 +24,6 @@ jobs:
       # Commands will execute in macOS container
       # with Xcode 14.2.0 installed
       - run: |
-          echo "------BREW------"
-          brew install sonar-scanner
-          
           echo "------PWD------"
           pwd
           cd ~
@@ -42,12 +39,17 @@ jobs:
           set -x
           curl -L https://desktop.docker.com/mac/main/arm64/Docker.dmg
           sudo hdiutil attach Docker.dmg
-          sudo /Volumes/Docker/Docker.app/Contents/MacOS/install
+          sudo /Volumes/Docker/Docker.app/Contents/MacOS/install --accept-license
           sudo hdiutil detach /Volumes/Docker
+          docker
           
           echo "INSTALL DOCKER-COMPOSE"
           curl -L https://github.com/docker/compose/releases/download/1.11.2/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
           chmod +x /usr/local/bin/docker-compose
+
+          echo "------BREW------"
+          brew install sonar-scanner colima
+          colima start
           
           echo "------DOCKER------"
           docker-compose up -d
