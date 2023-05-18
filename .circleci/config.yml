@@ -47,24 +47,24 @@ jobs:
           sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
           sudo apt-get update
           sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-          dockerd
+          sudo dockerd
           sudo docker run hello-world
-          docker compose version
+          sudo docker compose version
           
           echo "------SONAR SCANNER------"
-          apt-get install unzip wget nodejs
-          mkdir /downloads/sonarqube -p
-          cd /downloads/sonarqube
-          wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.2.0.1873-linux.zip
-          unzip sonar-scanner-cli-4.2.0.1873-linux.zip
-          mv sonar-scanner-4.2.0.1873-linux /opt/sonar-scanner
+          # apt-get install unzip wget nodejs
+          # mkdir /downloads/sonarqube -p
+          # cd /downloads/sonarqube
+          # wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.2.0.1873-linux.zip
+          # unzip sonar-scanner-cli-4.2.0.1873-linux.zip
+          # mv sonar-scanner-4.2.0.1873-linux /opt/sonar-scanner
 
           
           echo "------DOCKER------"
-          docker-compose up -d
+          sudo docker-compose up -d
           
           echo "------SONAR SCANNER------"
-          docker run \
+          sudo docker run \
             --rm \
             -e SONAR_HOST_URL="http://localhost:9000" \
             -e SONAR_SCANNER_OPTS="-Dsonar.projectKey=MONOREPO" -Dsonar.login=admin -Dsonar.password=admin \ 
