@@ -14,9 +14,9 @@ jobs:
   #     - image: sonarqube:latest
   #   steps:
   #     - run: |
-  build:
-    macos:
-      xcode: 14.2.0
+  sonarqube:
+    docker:
+      - image: cimg/base:current-22.04
 
     steps:
       - checkout:
@@ -36,31 +36,46 @@ jobs:
           ls -la
           
           echo "INSTALL DOCKER"
-          set -x
-          curl -L https://desktop.docker.com/mac/main/arm64/Docker.dmg
-          sudo hdiutil attach Docker.dmg
-          sudo /Volumes/Docker/Docker.app/Contents/MacOS/install --accept-license
-          sudo hdiutil detach /Volumes/Docker
-          docker
+          sudo apt-get update
+          sudo apt-get install ca-certificates curl gnupg
+          sudo install -m 0755 -d /etc/apt/keyrings
+          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+          sudo chmod a+r /etc/apt/keyrings/docker.gpg
+          echo \
+          "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+          "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
+          sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+          sudo apt-get update
+          sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+          sudo docker run hello-world
+          docker compose version
           
-          echo "INSTALL DOCKER-COMPOSE"
-          curl -L https://github.com/docker/compose/releases/download/1.11.2/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
-          chmod +x /usr/local/bin/docker-compose
+          echo "------SONAR SCANNER------"
+          apt-get install unzip wget nodejs
+          mkdir /downloads/sonarqube -p
+          cd /downloads/sonarqube
+          wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.2.0.1873-linux.zip
+          unzip sonar-scanner-cli-4.2.0.1873-linux.zip
+          mv sonar-scanner-4.2.0.1873-linux /opt/sonar-scanner
 
-          echo "------BREW------"
-          brew install sonar-scanner colima
-          colima start
           
           echo "------DOCKER------"
           docker-compose up -d
           
           echo "------SONAR SCANNER------"
-          sonar-scanner \
-            -Dsonar.projectKey=MONOREPO \
-            -Dsonar.sources=./packages \
-            -Dsonar.login=admin \
-            -Dsonar.password=admin \
-            -Dsonar.host.url=http://localhost:9000
+          docker run \
+            --rm \
+            -e SONAR_HOST_URL="http://localhost:9000" \
+            -e SONAR_SCANNER_OPTS="-Dsonar.projectKey=MONOREPO" -Dsonar.login=admin -Dsonar.password=admin \ 
+            -v "./packages" \
+            sonarsource/sonar-scanner-cli
+          
+          # sonar-scanner \
+          #   -Dsonar.projectKey=MONOREPO \
+          #   -Dsonar.sources=./packages \
+          #   -Dsonar.login=admin \
+          #   -Dsonar.password=admin \
+          #   -Dsonar.host.url=http://localhost:9000
           
           echo "------DONE!------"
 
@@ -96,7 +111,7 @@ workflows:
   node-android-ios:
     jobs:
       - node
-      - build
+      - sonarqube
       - android-build-and-test:
           requires:
             - node
