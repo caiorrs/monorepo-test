@@ -42,7 +42,7 @@ jobs:
           docker-compose up -d
           echo "------SONAR SCANNER------"
           sonar-scanner \
-            -Dsonar.projectKey=UFE \
+            -Dsonar.projectKey=MONOREPO \
             -Dsonar.sources=./packages \
             -Dsonar.login=admin \
             -Dsonar.password=admin \
