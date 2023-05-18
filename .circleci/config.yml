@@ -43,7 +43,7 @@ jobs:
           echo "------SONAR SCANNER------"
           sonar-scanner \
             -Dsonar.projectKey=UFE \
-            -Dsonar.sources=./src \
+            -Dsonar.sources=./packages \
             -Dsonar.login=admin \
             -Dsonar.password=admin \
             -Dsonar.host.url=http://localhost:9000
