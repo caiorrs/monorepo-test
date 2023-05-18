@@ -14,10 +14,19 @@ jobs:
       - image: sonarqube:latest
     steps:
       - run: |
-          cd ~
-          cd project
-          cd packages
+          echo "---------"
+          echo "INSTALLING SONAR-SCANNER"
           brew install sonar-scanner
+          echo "---------"
+          cd ~
+          echo "---------"
+          cd project
+          echo "---------"
+          cd packages
+          echo "---------"
+          pwd
+          echo "---------"
+          ls -la
           sonar-scanner \
             -Dsonar.projectKey=UFE \
             -Dsonar.sources=./testApp \

@@ -1,6 +1,6 @@
 # Docker setup
 
-version: '1.0'
+version: "3.0"
 services:
   sonar-server:
     image: sonarqube:latest
