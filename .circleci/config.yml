@@ -22,11 +22,7 @@ jobs:
         - run: |
             docker run -d -p 9000:9000 sonarsource/sonar-scanner-cli:latest
             
-            docker run -d  --rm \
-              -e SONAR_HOST_URL="http://localhost:9000" \
-              -e SONAR_SCANNER_OPTS="-Dsonar.projectKey=MONOREPO -Dsonar.sources=./packages -Dsonar.login=admin -Dsonar.password=admin" 
-              -v "~/packages" 
-              sonarsource/sonar-scanner-cli
+            docker run -d  --rm -e SONAR_HOST_URL="http://localhost:9000" -e SONAR_SCANNER_OPTS="-Dsonar.projectKey=MONOREPO -Dsonar.sources=./packages -Dsonar.login=admin -Dsonar.password=admin" -v "~/packages" sonarsource/sonar-scanner-cli
 
   sonarqube:
     docker:
