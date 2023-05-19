@@ -1,8 +1,19 @@
 # Docker setup
 
-version: "3.0"
+version: "3.9"
 services:
   sonar-server:
     image: sonarqube:latest
     ports:
       - 9000:9000
+  sonar-scanner:
+    image: sonarsource/sonar-scanner-cli:latest
+    environment:
+      SONAR_HOST_URL: http://localhost:9000
+      SONAR_PROJECT_KEY: MONOREPO
+      SONAR_sources: ./packages
+      SONAR_LOGIN: admin
+      SONAR_PASSWORD: admin
+    depends_on: 
+      sonar-server:
+        condition: service_healthy

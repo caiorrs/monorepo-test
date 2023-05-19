@@ -9,20 +9,32 @@ jobs:
       - checkout
       - run: yarn install
   
-  # sonarqube:
-  #   docker:
-  #     - image: sonarqube:latest
-  #   steps:
-  #     - run: |
+  sonarqube-docker:
+      docker:
+        - image: cimg/base:current
+      steps:
+        # ... steps for building/testing app ...
+        - checkout:
+            path: ~/project
+        - setup_remote_docker:
+            version: 20.10.14
+            docker_layer_caching: true
+        - run: |
+            docker run -d -p 9000:9000 sonarsource/sonar-scanner-cli:latest
+            
+            docker run -d  --rm \
+              -e SONAR_HOST_URL="http://localhost:9000" \
+              -e SONAR_SCANNER_OPTS="-Dsonar.projectKey=MONOREPO -Dsonar.sources=./packages -Dsonar.login=admin -Dsonar.password=admin" 
+              -v "~/packages" 
+              sonarsource/sonar-scanner-cli
+
   sonarqube:
     docker:
-      - image: cimg/base:current-22.04
+      - image: sonarsource/sonar-scanner-cli:latest
 
     steps:
       - checkout:
             path: ~/project
-      # Commands will execute in macOS container
-      # with Xcode 14.2.0 installed
       - run: |
           echo "------PWD------"
           pwd
@@ -34,43 +46,8 @@ jobs:
           
           echo "------LS PROJECT------"
           ls -la
-          
-          echo "INSTALL DOCKER"
-          # sudo apt-get update
-          # sudo apt-get install ca-certificates curl gnupg
-          # sudo install -m 0755 -d /etc/apt/keyrings
-          # curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-          # sudo chmod a+r /etc/apt/keyrings/docker.gpg
-          # echo \
-          # "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-          # "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
-          # sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-          # sudo apt-get update
-          # sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-          dockerd
-          docker run hello-world
-          docker compose version
-          
-          echo "------SONAR SCANNER------"
-          # apt-get install unzip wget nodejs
-          # mkdir /downloads/sonarqube -p
-          # cd /downloads/sonarqube
-          # wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.2.0.1873-linux.zip
-          # unzip sonar-scanner-cli-4.2.0.1873-linux.zip
-          # mv sonar-scanner-4.2.0.1873-linux /opt/sonar-scanner
 
-          
-          echo "------DOCKER------"
-          # docker-compose up -d
-          docker run -d -p 9000:9000 sonarqube:latest
-          
           echo "------SONAR SCANNER------"
-          docker run \
-            --rm \
-            -e SONAR_HOST_URL="http://localhost:9000" \
-            -e SONAR_SCANNER_OPTS="-Dsonar.projectKey=MONOREPO" -Dsonar.login=admin -Dsonar.password=admin \ 
-            -v "./packages" \
-            sonarsource/sonar-scanner-cli
           
           # sonar-scanner \
           #   -Dsonar.projectKey=MONOREPO \
@@ -113,7 +90,8 @@ workflows:
   node-android-ios:
     jobs:
       - node
-      - sonarqube
+      # - sonarqube
+      - sonarqube-docker
       - android-build-and-test:
           requires:
             - node
